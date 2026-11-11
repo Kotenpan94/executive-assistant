@@ -3,6 +3,8 @@ import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as DocumentPicker from 'expo-document-picker';
 import { Button, COLORS } from '../components/ui';
+import { DEMO_MODE } from '../config/demo';
+import { readSampleSyllabus, SAMPLE_ASSET } from '../mocks/sampleExtraction';
 import { extractDocument } from '../services/extract';
 import { importExtraction, ImportSummary, isAlreadyPlanned, itemDueAt, matchClass } from '../state/importExtraction';
 import { useWeek } from '../state/WeekContext';
@@ -42,6 +44,10 @@ export default function UploadScreen() {
 
   const pickFile = async () => {
     setError(null);
+    if (DEMO_MODE) {
+      setAsset(SAMPLE_ASSET);
+      return;
+    }
     const res = await DocumentPicker.getDocumentAsync({ type: ACCEPTED_TYPES, copyToCacheDirectory: true });
     if (!res.canceled && res.assets[0]) setAsset(res.assets[0]);
   };
@@ -51,7 +57,9 @@ export default function UploadScreen() {
     setError(null);
     setPhase({ name: 'reading' });
     try {
-      const result = await extractDocument(asset, kind, week.classes.map((c) => c.name), new Date());
+      const result = DEMO_MODE
+        ? await readSampleSyllabus(new Date())
+        : await extractDocument(asset, kind, week.classes.map((c) => c.name), new Date());
       setPhase({ name: 'review', result });
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Something went wrong. Try again in a moment.');
@@ -108,21 +116,30 @@ export default function UploadScreen() {
                 <Text style={styles.muted}>{formatSize(asset.size)}</Text>
                 <View style={styles.row}>
                   <Button label="Read it" primary onPress={read} />
-                  <Button label="Choose a different file" onPress={pickFile} />
+                  {!DEMO_MODE && <Button label="Choose a different file" onPress={pickFile} />}
                 </View>
               </View>
             ) : (
               <View style={styles.row}>
-                <Button label="Choose a file" primary onPress={pickFile} />
+                <Button label={DEMO_MODE ? 'Use a sample syllabus' : 'Choose a file'} primary onPress={pickFile} />
               </View>
             )}
-            <Text style={styles.hint}>PDF, Word file, photo, or text file.</Text>
+            {DEMO_MODE ? (
+              <Text style={styles.hint}>
+                This is a demo. It uses a sample syllabus and a saved result instead of sending a file to Claude. The
+                full app reads PDFs, Word files, photos and text files.
+              </Text>
+            ) : (
+              <Text style={styles.hint}>PDF, Word file, photo, or text file.</Text>
+            )}
 
             {error && <Text style={styles.error}>{error}</Text>}
 
-            <Text style={styles.privacy}>
-              To read it, the file is sent to Claude, Anthropic's AI. This app doesn't upload it anywhere else.
-            </Text>
+            {!DEMO_MODE && (
+              <Text style={styles.privacy}>
+                To read it, the file is sent to Claude, Anthropic's AI. This app doesn't upload it anywhere else.
+              </Text>
+            )}
           </>
         )}
 

@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import DevTimePanel from '../components/DevTimePanel';
 import DueDateReview from '../components/DueDateReview';
 import { COLORS } from '../components/ui';
+import { DEMO_MODE, SHOW_TIME_CONTROLS } from '../config/demo';
 import WorkActions from '../components/WorkActions';
 import { AgendaItem, isSameDay, resolveNow, WorkItem } from '../engine/resolveNow';
 import type { DevScenario } from '../mocks/scenarios';
@@ -65,10 +66,17 @@ export default function NowScreen() {
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+        {DEMO_MODE && (
+          <View style={styles.demoBanner}>
+            <Text style={styles.demoText}>
+              Demo with a sample student's week. Scroll down to jump to different times of day, or try the Add tab.
+            </Text>
+          </View>
+        )}
         <Text style={styles.date}>{formatDate(now)}</Text>
         <View style={styles.clockRow}>
           <Text style={styles.clock}>{formatTime(now)}</Text>
-          {fakeNow && <Text style={styles.devBadge}>DEV · fake time</Text>}
+          {fakeNow && <Text style={styles.devBadge}>{DEMO_MODE ? 'Demo · pretend time' : 'DEV · fake time'}</Text>}
         </View>
 
         {/* Hero */}
@@ -178,7 +186,7 @@ export default function NowScreen() {
           })
         )}
 
-        {__DEV__ && (
+        {SHOW_TIME_CONTROLS && (
           <DevTimePanel activeId={scenarioId} faked={fakeNow !== null} onPick={pickScenario} onShift={shiftClock} />
         )}
       </ScrollView>
@@ -202,6 +210,13 @@ function AgendaRow({ item }: { item: AgendaItem }) {
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: COLORS.bg },
   content: { padding: 20, paddingBottom: 40 },
+  demoBanner: {
+    padding: 12,
+    borderRadius: 10,
+    backgroundColor: COLORS.accentSoft,
+    marginBottom: 16,
+  },
+  demoText: { fontSize: 14, color: COLORS.text, lineHeight: 20 },
   date: { fontSize: 15, color: COLORS.muted },
   clockRow: { flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 20 },
   clock: { fontSize: 32, fontWeight: '700', color: COLORS.text },

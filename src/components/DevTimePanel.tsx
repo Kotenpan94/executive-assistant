@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import { DEMO_MODE } from '../config/demo';
 import { DEV_SCENARIOS, DevScenario } from '../mocks/scenarios';
 import { Button, COLORS } from './ui';
 
@@ -14,7 +15,7 @@ interface Props {
 export default function DevTimePanel({ activeId, faked, onPick, onShift }: Props) {
   return (
     <View style={styles.panel}>
-      <Text style={styles.title}>Dev: fake the time</Text>
+      <Text style={styles.title}>{DEMO_MODE ? 'Demo: try a different time' : 'Dev: fake the time'}</Text>
       <Text style={styles.sub}>Each preset resets the mock week to its starting data.</Text>
       <View style={styles.row}>
         <Button label="Real time" small selected={!faked} onPress={() => onPick(null)} />
