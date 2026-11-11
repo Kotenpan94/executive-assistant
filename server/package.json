@@ -1,0 +1,20 @@
+{
+  "name": "student-parent-tracker-dev-server",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Dev-only server that reads uploaded documents with Claude. Keeps the API key off the phone.",
+  "scripts": {
+    "start": "node --env-file-if-exists=.env --experimental-strip-types --no-warnings=ExperimentalWarning src/index.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^1.7.0",
+    "mammoth": "^1.13.0",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "typescript": "^7.0.2"
+  }
+}
