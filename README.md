@@ -4,6 +4,8 @@ A planning app for students with executive-function challenges. It answers one q
 
 Parents and other supporters can be invited as cheerleaders, not co-managers. The long-term goal is to make the student need less support over time.
 
+**[Try the live demo →](https://kotenpan94.github.io/executive-assistant/)** It runs in the browser on a sample student's week. Use the time controls at the bottom of the Now tab to jump through the day, and the Add tab to see a sample syllabus get turned into a plan. (The demo uses a saved AI result rather than calling Claude live.)
+
 > Status: early prototype. Runs on mock week data. Auth and a real backend are not wired in yet.
 
 ## What it does today
@@ -59,6 +61,8 @@ npm start              # listens on port 8787
 ```
 
 The app looks for the server on the same machine as the Expo dev server. Set `EXPO_PUBLIC_EXTRACT_URL` to point it elsewhere.
+
+To publish the demo to GitHub Pages: `npm run deploy`. This builds the web app in demo mode (`EXPO_PUBLIC_DEMO_MODE=1`) and pushes it to the `gh-pages` branch.
 
 ## Roadmap
 
